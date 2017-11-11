@@ -1,0 +1,48 @@
+{
+  "name": "PTTer flesh search",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "description": "use google custom search to search ID of PTT more Conveniently",
+  "background": {
+    "scripts": ["js/backround.js"  ],
+    "persistent": false
+  },
+  "content_scripts": [
+  {
+      "matches": ["https://cse.google.com/*"],
+      "js": ["js/content.js"]
+  }
+  ],
+ "permissions": [
+    "http://*/",
+    "http://*/*",
+    "https://*/*",
+    "https://*/",
+    "cookies"
+  ],
+  "omnibox": {
+    "keyword": "extensionizr"
+  },
+  "commands" : {
+  "reload_extension" : {
+  "suggested_key" : {
+  "default" : "Ctrl+Q",
+  "windows" : "Ctrl+Q",
+  "mac" : "MacCtrl+Q",
+  "chromeos" : "Ctrl+Q",
+  "linux" : "Ctrl+Q"
+  },
+  "description" : "shortcut for reloading extensions"
+  },
+  "query" : {
+  "suggested_key" : {
+  "default" : "Ctrl+A",
+  "windows" : "Ctrl+A",
+  "mac" : "MacCtrl+A",
+  "chromeos" : "Ctrl+A",
+  "linux" : "Ctrl+A"
+  },
+  "description" : "to query"
+  }  
+  }
+}
