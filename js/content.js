@@ -84,11 +84,11 @@ class crawl_PTT{
 			time="",
 			content="",
 			content_text="",
-			push={};
+			push={},
+			ip="";
 		try{
 			post_detail = post.getElementsByClassName('article-metaline');
 		}catch(e){
-			console.log(" can't catch post_detail");
 			console.log(e);
 		}
 		
@@ -96,24 +96,28 @@ class crawl_PTT{
 			board = post.getElementsByClassName('article-metaline-right')[0].getElementsByClassName('article-meta-value')[0].innerText;
 		}catch(e){
 
+			console.log(e);
 		}
 
 		try{
 			author = post_detail[0].getElementsByClassName('article-meta-value')[0].innerText;
 		}catch(e){
 
+			console.log(e);
 		}
 
 		try{
 			tittle = post_detail[1].getElementsByClassName('article-meta-value')[0].innerText;
 		}catch(e){
 
+			console.log(e);
 		}
 
 		try{
 			time = post_detail[2].getElementsByClassName('article-meta-value')[0].innerText;
 		}catch(e){
 
+			console.log(e);
 		}
 
 		try{
@@ -128,6 +132,7 @@ class crawl_PTT{
 				}
 			}
 		}catch(e){
+			console.log(e);
 		}
 		
 		try{
@@ -146,18 +151,45 @@ class crawl_PTT{
 					push[i] = {'content':push_content,'time':push_time};
 				}
 			}
-		}catch(e)
-		{
+		}catch(e){
 			console.log(e);
 		}
-		this.post_info ={'author':author,'board':board,'tittle':tittle,'time':time,'href':this.href,'content_text':content_text,'push':push};
-		
-//		console.log(content.innerText);
 
+		try{
+			let ip_sel = post.getElementsByClassName('f2');
+			let reg = /[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*/;
+			for(let i=0;i<ip_sel.length;i++){
+				let ip_match = ip_sel[i].innerText.match('※ 發信站:');
+				if(ip_match != null){
+					let ip_reg = ip_sel[i].innerText.match(reg);
+					if(ip_reg!=null)
+					{
+						ip=ip_reg[0];
+					}
+				}
+			}
+		}catch(e){
+			console.log(e);
+		}
+
+
+		this.post_info ={
+			'author':author,
+			'board':board,
+			'tittle':tittle,
+			'time':time,
+			'href':this.href,
+			'content_text':content_text,
+			'push':push,
+			'ip':ip
+		};
+		
+/*
 		console.log('作者：'+author);
 		console.log('看板：'+board);
 		console.log('標題：'+tittle);
 		console.log('時間：'+time);
+*/
 		console.log(this.post_info);
 
 	}
