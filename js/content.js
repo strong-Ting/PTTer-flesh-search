@@ -32,19 +32,32 @@ dom_listenser ('body',(mutations)=>{
     mutations.forEach((mutation)=>{
 	for(let i=0;i<mutation.addedNodes.length;i++){
 		if(mutation.addedNodes[i].className=='gsc-webResult gsc-result'){
-			let result =mutation.addedNodes[i].querySelector('a.gs-title').href;
-			console.log(result);
-			let con = new crawl_PTT(result);
-			con.crawl();
+			let keywords = document.getElementById('gs_tti50').lastChild.value;
+			try{
+				let result =mutation.addedNodes[i].querySelector('a.gs-title').href;
+				let c = new crawl_PTT(result,keywords);
+				c.crawl();
+			}
+			catch(e){
+				console.log(e);
+				console.log(mutation);
+			}
 		}
 	}
 	});
 });
 
+/*
+document.getElementById('gs_tti50').child.addEventListener('input', function (evt) {
+//	    console.log(this.value);
+});
+*/
+
 class crawl_PTT{
-	constructor(href){
+	constructor(href,keywords){
 		this.href = href;
 		this.post_info ={};
+		this.keywords = keywords;
 	}
 
 	crawl(){
@@ -63,46 +76,81 @@ class crawl_PTT{
 	}
 
 	analysis(post){
-
-		let post_detail = post.getElementsByClassName('article-metaline');
-
-		let board = post.getElementsByClassName('article-metaline-right')[0].getElementsByClassName('article-meta-value')[0].innerText;
-
-		let author = post_detail[0].getElementsByClassName('article-meta-value')[0].innerText;
-
-		let tittle = post_detail[1].getElementsByClassName('article-meta-value')[0].innerText;
-		let time = post_detail[2].getElementsByClassName('article-meta-value')[0].innerText;
-
-		let content = post.getElementById('main-content');
+	
+		let post_detail="",
+			board="",
+			author="",
+			tittle="",
+			time="",
+			content="",
+			content_text="",
+			push={};
+		try{
+			post_detail = post.getElementsByClassName('article-metaline');
+		}catch(e){
+			console.log(" can't catch post_detail");
+			console.log(e);
+		}
 		
-		for(var i=0;i<content.childNodes.length;i++){
-/*
-			if(content.childNodes[i].nodeName == 'DIV' || content.childNodes[i].nodeName=='span'){
-				content.removeChild(content.childNodes[i]);	
-			}*/
-			if(content.childNodes[i].nodeName == '#text'){
-				console.log(content.childNodes[i].data);
-			}
-			else if( content.childNodes[i].nodeName == 'A'){
-				console.log(content.childNodes[i].innerHTML);
-			}
+		try{
+			board = post.getElementsByClassName('article-metaline-right')[0].getElementsByClassName('article-meta-value')[0].innerText;
+		}catch(e){
+
 		}
-/*
-		let content_span = content.getElementsByTagName('span');
+
+		try{
+			author = post_detail[0].getElementsByClassName('article-meta-value')[0].innerText;
+		}catch(e){
+
+		}
+
+		try{
+			tittle = post_detail[1].getElementsByClassName('article-meta-value')[0].innerText;
+		}catch(e){
+
+		}
+
+		try{
+			time = post_detail[2].getElementsByClassName('article-meta-value')[0].innerText;
+		}catch(e){
+
+		}
+
+		try{
+			content = post.getElementById('main-content');
+			content_text ="";
+			for(let i=0;i<content.childNodes.length;i++){
+				if(content.childNodes[i].nodeName == '#text'){
+					content_text = content_text+content.childNodes[i].data;
+				}
+				else if( content.childNodes[i].nodeName == 'A'){
+					content_text = content_text + content.childNodes[i].innerHTML;
+				}
+			}
+		}catch(e){
+		}
 		
-		let content_div = content.getElementsByTagName('div');
-
-		for(let i=0;i<content_span.length;i++){
-			content_span[i].parentNode.removeChild(content_span[i]);
-		}
-
-		for(let i=0;i<content_div.length;i++){
-			content_div[i].parentNode.removeChild(content_div[i]);
-		}
+		try{
+			let push_sel = content.getElementsByClassName('push');
+			for(let i=0;i<push_sel.length;i++){
+				let push_id = push_sel[i].getElementsByClassName('f3 hl push-userid')[0].innerText;
+				if(push_id==this.keywords)
+				{
+					let push_content = push_sel[i].getElementsByClassName('f3 push-content')[0].innerText;
+					let push_time = push_sel[i].getElementsByClassName('push-ipdatetime')[0].innerText;
+/*
+					console.log('///////////////////////////////');
+					console.log(push_content+push_time);
+					console.log('///////////////////////////////');
 */
-
-		let push = content.getElementsByClassName('push');
-		this.post_info ={'author':author,'board':board,'tittle':tittle,'time':time,'href':this.href};
+					push[i] = {'content':push_content,'time':push_time};
+				}
+			}
+		}catch(e)
+		{
+			console.log(e);
+		}
+		this.post_info ={'author':author,'board':board,'tittle':tittle,'time':time,'href':this.href,'content_text':content_text,'push':push};
 		
 //		console.log(content.innerText);
 
