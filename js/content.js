@@ -32,9 +32,14 @@ dom_listenser ('body',(mutations)=>{
     mutations.forEach((mutation)=>{
 	for(let i=0;i<mutation.addedNodes.length;i++){
 		if(mutation.addedNodes[i].className=='gsc-webResult gsc-result'){
+			let hide = document.getElementsByClassName('gsc-webResult gsc-result');
+			for(let i=0;i<hide.length;i++){
+				//hide[i].style.display = 'none';
+			}
 			let keywords = document.getElementById('gs_tti50').lastChild.value;
 			try{
 				let result =mutation.addedNodes[i].querySelector('a.gs-title').href;
+				
 				let c = new crawl_PTT(result,keywords);
 				c.crawl();
 			}
@@ -60,15 +65,17 @@ class crawl_PTT{
 		this.keywords = keywords;
 	}
 
-	crawl(){
+	crawl(){	
 		let xhr = new XMLHttpRequest();
 		xhr.open('GET',this.href,true);
 		xhr.responseType = 'document';
 
-		xhr.onload = ()=>{
+		xhr.onreadystatechange = ()=>{
 			if(xhr.readyState === xhr.DONE){
 				if(xhr.status === 200){
-					this.analysis(xhr.response);
+					//this.analysis(xhr.response);
+					//return xhr.response
+					console.log(xhr.response);
 				}
 			}
 		}
@@ -85,7 +92,8 @@ class crawl_PTT{
 			content="",
 			content_text="",
 			push={},
-			ip="";
+			ip="",
+			num="";
 		try{
 			post_detail = post.getElementsByClassName('article-metaline');
 		}catch(e){
@@ -172,8 +180,15 @@ class crawl_PTT{
 			console.log(e);
 		}
 
-
+		let custom_search =document.getElementsByClassName('gsc-webResult gsc-result');
+		for(let i=0;i<custom_search.length;i++){
+			if(custom_search[i].querySelector('a.gs-title').href==this.href){
+				num = i;
+			}
+		}
+		
 		this.post_info ={
+			'num':num,
 			'author':author,
 			'board':board,
 			'tittle':tittle,
@@ -191,7 +206,7 @@ class crawl_PTT{
 		console.log('時間：'+time);
 */
 		console.log(this.post_info);
-
+		return this.post_info
 	}
 }
 
