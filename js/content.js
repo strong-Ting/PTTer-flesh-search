@@ -27,21 +27,31 @@ const dom_listenser=(idName,mutationHandler)=>{
         observer.observe(target, config);
 };
 
+const hide_result = ()=>{
+	let hide = document.getElementsByClassName('gsc-webResult gsc-result');
+	for(let i=0;i<hide.length;i++){
+		hide[i].style.display = 'none';
+	}
+}
 
 dom_listenser ('body',(mutations)=>{
     mutations.forEach((mutation)=>{
 	for(let i=0;i<mutation.addedNodes.length;i++){
 		if(mutation.addedNodes[i].className=='gsc-webResult gsc-result'){
-			let hide = document.getElementsByClassName('gsc-webResult gsc-result');
-			for(let i=0;i<hide.length;i++){
-				//hide[i].style.display = 'none';
-			}
+			//hide_result();
 			let keywords = document.getElementById('gs_tti50').lastChild.value;
 			try{
 				let result =mutation.addedNodes[i].querySelector('a.gs-title').href;
 				
-				let c = new crawl_PTT(result,keywords);
-				c.crawl();
+				let PTT = new crawl_PTT(result,keywords);
+				let post = PTT.crawl();
+				let post_info = post.then((result)=>{
+					return PTT.analysis(result);
+				});
+				post_info.then((result)=>{
+					console.log(result);
+				});
+				
 			}
 			catch(e){
 				console.log(e);
@@ -66,6 +76,7 @@ class crawl_PTT{
 	}
 
 	crawl(){	
+/*
 		let xhr = new XMLHttpRequest();
 		xhr.open('GET',this.href,true);
 		xhr.responseType = 'document';
@@ -80,6 +91,47 @@ class crawl_PTT{
 			}
 		}
 		xhr.send(null);
+*/ 
+		let href = this.href;
+		let xhr = function() {
+			return new Promise((resolve, reject) => {
+				var xhr = new XMLHttpRequest();
+				xhr.responseType = 'document';
+		    	xhr.onreadystatechange = function() {
+					if (xhr.readyState === 4) {
+						if (xhr.status >= 200 && xhr.status < 300) {
+							var response;
+							try {
+								response = xhr.response;
+							} 
+							catch (e) {
+								reject(e);
+							}
+							if (response) {
+								resolve(response, xhr.status, xhr);
+							}
+						} 
+						else {
+							reject(xhr);
+						}
+					}
+				};
+				xhr.open('GET', href, true);
+		    	xhr.send(null);
+			});
+		};
+
+		async function call_xhr() {
+	  		try {
+				let result = await xhr();
+		    	return result
+			} 
+			catch (e) {
+				console.log(e);
+			}
+		}
+		let post = call_xhr();
+		return post	
 	}
 
 	analysis(post){
@@ -205,7 +257,7 @@ class crawl_PTT{
 		console.log('標題：'+tittle);
 		console.log('時間：'+time);
 */
-		console.log(this.post_info);
+//		console.log(this.post_info);
 		return this.post_info
 	}
 }
