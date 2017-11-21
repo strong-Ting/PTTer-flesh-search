@@ -35,7 +35,7 @@ const hide_result = ()=>{
 }
 
 dom_listenser ('body',(mutations)=>{
-    mutations.forEach((mutation)=>{
+    mutations.forEach(async(mutation)=>{
 	for(let i=0;i<mutation.addedNodes.length;i++){
 		if(mutation.addedNodes[i].className=='gsc-webResult gsc-result'){
 			//hide_result();
@@ -44,14 +44,9 @@ dom_listenser ('body',(mutations)=>{
 				let result =mutation.addedNodes[i].querySelector('a.gs-title').href;
 				
 				let PTT = new crawl_PTT(result,keywords);
-				let post = PTT.crawl();
-				let post_info = post.then((result)=>{
-					return PTT.analysis(result);
-				});
-				post_info.then((result)=>{
-					console.log(result);
-				});
-				
+				let post = await PTT.crawl();
+				let post_info = PTT.analysis(post);
+				console.log(post_info);
 			}
 			catch(e){
 				console.log(e);
@@ -75,32 +70,17 @@ class crawl_PTT{
 		this.keywords = keywords;
 	}
 
-	crawl(){	
-/*
-		let xhr = new XMLHttpRequest();
-		xhr.open('GET',this.href,true);
-		xhr.responseType = 'document';
+	async crawl(){	
 
-		xhr.onreadystatechange = ()=>{
-			if(xhr.readyState === xhr.DONE){
-				if(xhr.status === 200){
-					//this.analysis(xhr.response);
-					//return xhr.response
-					console.log(xhr.response);
-				}
-			}
-		}
-		xhr.send(null);
-*/ 
 		let href = this.href;
 		let xhr = function() {
 			return new Promise((resolve, reject) => {
-				var xhr = new XMLHttpRequest();
+				let xhr = new XMLHttpRequest();
 				xhr.responseType = 'document';
 		    	xhr.onreadystatechange = function() {
 					if (xhr.readyState === 4) {
 						if (xhr.status >= 200 && xhr.status < 300) {
-							var response;
+							let response;
 							try {
 								response = xhr.response;
 							} 
@@ -120,18 +100,8 @@ class crawl_PTT{
 		    	xhr.send(null);
 			});
 		};
-
-		async function call_xhr() {
-	  		try {
-				let result = await xhr();
-		    	return result
-			} 
-			catch (e) {
-				console.log(e);
-			}
-		}
-		let post = call_xhr();
-		return post	
+		let post = await xhr();
+		return post;
 	}
 
 	analysis(post){
