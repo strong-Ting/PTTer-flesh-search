@@ -1,5 +1,5 @@
 
-
+/*
 const main = (data)=>{
     for(var i=0;i<data.length;i++){
         console.log(data[i].querySelector('a.gs-title').href);
@@ -18,7 +18,7 @@ const query_load = (sel) =>{
     query();
 }
 //let num = setInterval("query_load('.gsc-webResult.gsc-result')",100);
-
+*/
 
 const dom_listenser=(idName,mutationHandler)=>{
         let target = document.querySelector(idName);
@@ -31,6 +31,29 @@ const hide_result = ()=>{
 	let hide = document.getElementsByClassName('gsc-webResult gsc-result');
 	for(let i=0;i<hide.length;i++){
 		hide[i].style.display = 'none';
+	}
+}
+
+const display = (post_info)=>{
+	let result= document.getElementsByClassName('gsc-webResult gsc-result');
+	let post_num = post_info.num;
+
+	result[post_num].querySelector('a.gs-title').innerText = post_info.tittle;
+	result[post_num].querySelector('a.gs-title').href = post_info.href;
+	result[post_num].querySelector('.gs-bidi-start-align.gs-visibleUrl.gs-visibleUrl-long').innerText = "作者："+post_info.author+"    "+"IP："+post_info.ip+"時間:"+post_info.time;
+	if(post_info.is_author==true){
+		result[post_num].querySelector('div.gs-snippet').innerText = post_info.content_text;
+	}
+	else if(post_info.push.length>0){
+		result[post_num].querySelector('div.gs-snippet').innerText = "";
+		for(let i=0;i<post_info.push.length;i++){
+			result[post_num].querySelector('div.gs-snippet').innerText += (post_info.push[i].content+post_info.push[i].time);
+			console.log(result[post_num].querySelector('div.gs-snippet').innerText);
+		}
+	}
+	
+	for(let x in post_info.push){
+		console.log(x);
 	}
 }
 
@@ -47,6 +70,7 @@ dom_listenser ('body',(mutations)=>{
 				let post = await PTT.crawl();
 				let post_info = PTT.analysis(post);
 				console.log(post_info);
+				display(post_info);
 			}
 			catch(e){
 				console.log(e);
@@ -64,6 +88,7 @@ document.getElementById('gs_tti50').child.addEventListener('input', function (ev
 */
 
 class crawl_PTT{
+
 	constructor(href,keywords){
 		this.href = href;
 		this.post_info ={};
@@ -109,11 +134,12 @@ class crawl_PTT{
 		let post_detail="",
 			board="",
 			author="",
+			is_author,
 			tittle="",
 			time="",
 			content="",
 			content_text="",
-			push={},
+			push=[],
 			ip="",
 			num="";
 		try{
@@ -131,6 +157,13 @@ class crawl_PTT{
 
 		try{
 			author = post_detail[0].getElementsByClassName('article-meta-value')[0].innerText;
+			author = author.split("(")[0].trim();
+			if(author == this.keywords){
+				is_author = true;
+			}
+			else{
+				is_author = false;
+			}
 		}catch(e){
 
 			console.log(e);
@@ -178,7 +211,7 @@ class crawl_PTT{
 					console.log(push_content+push_time);
 					console.log('///////////////////////////////');
 */
-					push[i] = {'content':push_content,'time':push_time};
+					push.push({'push_num':i,'content':push_content,'time':push_time});
 				}
 			}
 		}catch(e){
@@ -212,6 +245,7 @@ class crawl_PTT{
 		this.post_info ={
 			'num':num,
 			'author':author,
+			'is_author':is_author,
 			'board':board,
 			'tittle':tittle,
 			'time':time,
