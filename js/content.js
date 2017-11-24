@@ -41,20 +41,23 @@ const display = (post_info)=>{
 	result[post_num].querySelector('a.gs-title').innerText = post_info.tittle;
 	result[post_num].querySelector('a.gs-title').href = post_info.href;
 	result[post_num].querySelector('.gs-bidi-start-align.gs-visibleUrl.gs-visibleUrl-long').innerText = "作者："+post_info.author+"    "+"IP："+post_info.ip+"時間:"+post_info.time;
+
+	let content = result[post_num].querySelector('div.gs-snippet');
 	if(post_info.is_author==true){
-		result[post_num].querySelector('div.gs-snippet').innerText = post_info.content_text;
+
+		let p = document.createElement('p');
+		p.innerText = post_info.content_text;
+		content.innerText = '';
+		content.appendChild(p);
+		console.log(post_info.content_text.length);
 	}
 	else if(post_info.push.length>0){
-		result[post_num].querySelector('div.gs-snippet').innerText = "";
+		content.innerText = "";
 		for(let i=0;i<post_info.push.length;i++){
-			result[post_num].querySelector('div.gs-snippet').innerText += (post_info.push[i].content+post_info.push[i].time);
-			console.log(result[post_num].querySelector('div.gs-snippet').innerText);
+			content.innerText += (post_info.push[i].content+post_info.push[i].time);
 		}
 	}
 	
-	for(let x in post_info.push){
-		console.log(x);
-	}
 }
 
 dom_listenser ('body',(mutations)=>{
