@@ -1,25 +1,3 @@
-
-/*
-const main = (data)=>{
-    for(var i=0;i<data.length;i++){
-        console.log(data[i].querySelector('a.gs-title').href);
-    }
-}
-
-//because not load page in one time,some data can't get.the function to wait the data load
-const query_load = (sel) =>{
-    const query =()=>{
-        let data = document.querySelectorAll(sel);
-        if(data.length!=0){
- //           clearInterval(num);
-            main(data);
-        }
-    }
-    query();
-}
-//let num = setInterval("query_load('.gsc-webResult.gsc-result')",100);
-*/
-
 const dom_listenser=(idName,mutationHandler)=>{
         let target = document.querySelector(idName);
         let config = { attributes: true, childList: true, characterData: true,subtree:true};
@@ -45,10 +23,44 @@ const display = (post_info)=>{
 	let content = result[post_num].querySelector('div.gs-snippet');
 	if(post_info.is_author==true){
 
+		let details = document.createElement('details');
 		let p = document.createElement('p');
-		p.innerText = post_info.content_text;
+		let summary = document .createElement('summary');
+		let p_more = document.createElement('p');
+
+		let wrap_content = 	post_info.content_text.match(/.*\n/ig); //get the array that content of wrap
+		console.log(wrap_content);
+
+		let i =0;
+		let display_rows =6;
+		while( i<wrap_content.length){
+			if(i<display_rows){
+				if(wrap_content[i] == "\n" && !p.innerText){  //dele wrap on article begins
+					display_rows++;
+				}
+				else{
+					p.innerText += wrap_content[i];
+				}
+			}
+			else{
+				p_more.innerText+=wrap_content[i];
+			}
+			i++;
+		}
+
+		summary.innerText = "更多"
+
 		content.innerText = '';
 		content.appendChild(p);
+
+		details.appendChild(p_more);
+		details.appendChild(summary);
+
+		if(p_more.innerText){
+			content.appendChild(details);
+		}
+
+		
 		console.log(post_info.content_text.length);
 	}
 	else if(post_info.push.length>0){
