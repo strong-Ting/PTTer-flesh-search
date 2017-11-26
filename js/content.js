@@ -25,18 +25,29 @@ const display = (post_info)=>{
 		title.target = '_blank'; //open link on new tab
 
 		let details_class = 'gs-bidi-start-align gs-visibleUrl gs-visibleUrl-long';
-		
+		let style = `white-space:pre; position: relative;`;
+		let style_right = `position: absolute; top:0px; left:250px `;
+
 		let author = document.createElement('div');
 		author.className = details_class;
-		author.innerText = '作者：'+post_info.author;
+		author.innerText = '作者:'+post_info.author;
+		author.style = style;
+
+		let board = document.createElement('div');
+		board.className = details_class;
+		board.innerText ='看板:'+post_info.board;
+		board.style = style_right;
+		author.appendChild(board);
 
 		let time = document.createElement('div');
 		time.className = details_class;
-		time.innerText = '時間：'+post_info.time;
+		time.innerText = '時間:'+post_info.time;
+		time.style = style;
 
 		let ip = document.createElement('div');
 		ip.className = details_class;
 		ip.innerText = 'IP:'+post_info.ip;
+		ip.style = style;
 
 		result[post_num].querySelector('.gsc-url-top').appendChild(author);
 		result[post_num].querySelector('.gsc-url-top').appendChild(time);
