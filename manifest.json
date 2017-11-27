@@ -11,6 +11,10 @@
   {
       "matches": ["https://cse.google.com/*"],
       "js": ["js/content.js"]
+  },
+  {
+		"matches":["https://term.ptt.cc/"],
+		"js":["js/ptt.js"]
   }
   ],
  "permissions": [
