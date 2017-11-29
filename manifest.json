@@ -13,7 +13,7 @@
       "js": ["js/content.js"]
   },
   {
-		"matches":["https://term.ptt.cc/"],
+		"matches":["https://term.ptt.cc/","https://iamchucky.github.io/PttChrome/index.html"],
 		"js":["js/ptt.js"]
   }
   ],
