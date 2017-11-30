@@ -30,21 +30,32 @@ const cookie_check = ()=>{
 
 cookie_check();
 
-chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {  
+chrome.runtime.onMessage.addListener((message, sender, sendResponse)=> {  
 	console.log(message);		      
-	sendResponse('background');  
+//	send_ID(message.ID);
+	open_window(message.ID);
+		sendResponse('background');  
 });
 
-/*
-const send_ID = (ID) ={
-	chrome.tabs.query({url:"https://strong-ting.github.io/PTTer-flesh-search/"}, function(tabs) {
-		chrome.tabs.sendMessage(tabs[0].id, {id: ID}, function(response) {
-		console.log(response);
+const open_window =(ID)=>{
+	chrome.tabs.create({url:"https://strong-ting.github.io/PTTer-flesh-search/"},
+		(tabs)=>{
+			console.log(tabs);
+	//		send_ID(tabs.id,ID);
+			chrome.tabs.executeScript(tabs.id,{runAt:"document_idle",file:'js/search.js'},(result)=>{
+				console.log(result);
+				send_ID(tabs.id,ID);
 		});
-	});
+	}); 	
+
 }
 
-*/
+const send_ID = (tab_id,ID) =>{
+	let url = "https://strong-ting.github.io/PTTer-flesh-search/";
+	chrome.tabs.sendMessage(tab_id,{ID:ID},(response)=>{
+		console.log(response);
+	});
+}
 
 
 
