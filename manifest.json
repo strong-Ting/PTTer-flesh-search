@@ -15,6 +15,10 @@
   {
 		"matches":["https://term.ptt.cc/","https://iamchucky.github.io/PttChrome/index.html"],
 		"js":["js/ptt.js"]
+  },
+  {
+	  "matches":["https://strong-ting.github.io/PTTer-flesh-search/"],
+	  "js":["js/search.js"]
   }
   ],
  "permissions": [
@@ -22,7 +26,8 @@
     "http://*/*",
     "https://*/*",
     "https://*/",
-    "cookies"
+    "cookies",
+	"tabs"
   ],
   "omnibox": {
     "keyword": "extensionizr"
