@@ -51,13 +51,10 @@ dom_listenser('body',(mutations)=>{
 
 const search =(ID)=>{
 
-	let url = 'https://strong-ting.github.io/PTTer-flesh-search/';
-	let search_window = window.open(url);
 
-	
 	chrome.runtime.sendMessage({ID:ID}, 
-		function(response) {  
-	    	console.log(response);  
+		(response)=> {  
+  			console.log(response);  
 	});
 
 
