@@ -143,17 +143,18 @@ dom_listenser ('body',(mutations)=>{
 			if(mutation.addedNodes[i].className=='gsc-webResult gsc-result'){
 				//hide_result();
 				let keywords,
-					result;
+					href;
 				try{
 					keywords = document.getElementById('gs_tti50').lastChild.value;
-					result = mutation.addedNodes[i].querySelector('a.gs-title').href;
+					href = mutation.addedNodes[i].querySelector('a.gs-title').href;
+					
 				}
 				catch(e){
 					console.log(e);
 				}
 
 				try{
-					let PTT = new crawl_PTT(result,keywords);
+					let PTT = new crawl_PTT(href,keywords);
 					let post = await PTT.crawl();
 					let post_info = PTT.analysis(post);
 					console.log(post_info);
@@ -185,6 +186,9 @@ class crawl_PTT{
 	async crawl(){	
 
 		let href = this.href;
+		if(!href.includes('https')){
+			href = href.replace('http','https') ;
+		}
 		let xhr = function() {
 			return new Promise((resolve, reject) => {
 				let xhr = new XMLHttpRequest();
