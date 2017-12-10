@@ -30,7 +30,7 @@ dom_listenser('body',(mutations)=>{
 					let push = added[i].querySelector('.q11.b0');
 					if(push){
 						let ID = push.innerText;
-						let reg = /^[a-zA-Z]{1}[A-Za-z0-9]{3,12}/;   	
+						let reg = /^[a-zA-Z]{1}[A-Za-z0-9]{2,12}/;   	
 						if(ID.match(reg)){
 							push.className = "push";
 							push.setAttribute('role','button');
