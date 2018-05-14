@@ -13,9 +13,13 @@
       "js": ["js/content.js"]
   },
   {
-		"matches":["https://term.ptt.cc/","https://iamchucky.github.io/PttChrome/index.html"],
+		"matches":["https://term.ptt.cc/"],
 		"js":["js/ptt.js"]
-  } 
+  },
+  {
+	  "matches":["https://www.google.com/*"],
+	  "js":["js/GoogleSearch.js"]
+  }
   ],
  "permissions": [
     "http://*/",
